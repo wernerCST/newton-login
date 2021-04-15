@@ -21,19 +21,38 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getUser = (req, res) => {
-    const id = req.params.id;
-    User.findOne({ 'userID': id })
+    const id = { 'userID': req.params.id };
+    User.findOne(id)
     .exec()
     .then(doc => {
-        console.log(doc);
-        res.status(200).json(doc);
+        generateUniqueCode(res, id, doc);        
     })
-    .catch(err => {
-        console.log(err);
-        res.status(400).json({
+    .catch(() => {
+            res.status(400).json({
             status: 'fail',
-            message: err
+            message: `Sorry no user was found with id: ${id}`
         })
     })
     
 };
+
+const generateUniqueCode = (res, id, doc) => {
+    const code = { 'u_code': Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000 }; 
+    // send email function should go here.
+    User.findOneAndUpdate(id, code, {
+        new: true,
+        runValidators: true
+    })
+    .exec()
+    .then(ud => {
+        console.log(ud)
+        res.status(200).json(ud)
+    })
+    .catch(() => {
+        res.status(500).json({
+            status: 'fail',
+            message: `Sorry no user was found with id: ${id}`
+        })
+    });   
+    
+}

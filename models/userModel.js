@@ -14,12 +14,20 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         require: [true, 'A user should have an email'],
-        unique: true
+        unique: true        
     },
-    // u_code: {
-    //     code: [{ type: mongoose.Schema.Types.ObjectId, ref: 'code'}]
-    // }
+    u_code: {
+        type: Number,
+        unique: false
+    },
+    u_code_date: {
+        type: Date,
+        unique: false
+    }
 });
+
+
+
 
 const User = mongoose.model('User', userSchema);
 
