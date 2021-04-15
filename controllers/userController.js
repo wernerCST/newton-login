@@ -1,14 +1,39 @@
+const User = require('./../models/userModel')
 
-exports.getAllUsers = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        data: 'getAllUsers route is not yet deffined '
-    });
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find()
+        res.status(200).json({
+            status: 'success',
+            results: users.length,
+            data: {
+                users
+            }
+        });
+    } catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err
+        })
+    }
+    
 };
 
 exports.getUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        data: 'getUser route is not yet deffined'
-    });
+    const id = req.params.id;
+    User.findOne({ 'userID': id })
+    .exec()
+    .then(doc => {
+        console.log(doc);
+        res.status(200).json(doc);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(400).json({
+            status: 'fail',
+            message: err
+        })
+    })
+    
 };
